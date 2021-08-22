@@ -3,8 +3,9 @@
   "description": "Statamic 3 2FA addon",
   "type": "statamic-addon",
   "require": {
-    "pragmarx/google2fa-qrcode": "^1.0.3",
-    "spatie/url": "^1.3.0"
+    "pragmarx/google2fa-qrcode": "^3.0.0",
+    "bacon/bacon-qr-code": "^2.0.4",
+    "spatie/url": "^1.3.5"
   },
   "autoload": {
     "psr-4": {
@@ -26,7 +27,7 @@
     },
     "laravel": {
       "providers": [
-          "KindWork\\TwoFa\\ServiceProvider"
+        "KindWork\\TwoFa\\ServiceProvider"
       ]
     }
   }

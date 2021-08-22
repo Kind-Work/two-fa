@@ -30,7 +30,18 @@
     <transition name="two-fa-fade">
       <div
         v-if="state === 'idle'"
-        class="activate flex flex-col items-center justify-center absolute top-0 right-0 bottom-0 left-0 z-10"
+        class="
+          activate
+          flex flex-col
+          items-center
+          justify-center
+          absolute
+          top-0
+          right-0
+          bottom-0
+          left-0
+          z-10
+        "
       >
         <button @click="state = 'ready'" class="btn btn-primary">
           {{ translations['twofa::activate.enable.button'] }}
@@ -46,7 +57,10 @@
       v-if="state === 'idle' || state === 'ready' || state === 'activating'"
       class="activate-form"
     >
-      <img class="float-left" :src="meta.qrCode" />
+      <div class="float-left">
+        <img v-if="isQrCodeImage" :src="meta.qrCode" />
+        <div v-else v-html="meta.qrCode"></div>
+      </div>
 
       <div class="right-side float-left p-2">
         <div class="content">
@@ -134,6 +148,9 @@ export default {
     },
     translations() {
       return this.$store.state.statamic.config.translations;
+    },
+    isQrCodeImage() {
+      return /^data/.test(this.meta.qrCode);
     },
   },
   methods: {

@@ -68,6 +68,13 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype
         // Set up 2FA
         $this->active = isset($user->data()['two_fa']) ? true : false;
         $this->google2fa = new Google2FA();
+        if (Config::get('two-fa.qrCodeType') == 'SVG') {
+          $this->google2fa->setQrcodeService(
+            new \PragmaRX\Google2FAQRCode\QRCode\Bacon(
+              new \BaconQrCode\Renderer\Image\SvgImageBackEnd()
+            )
+          );
+        }
         $this->secretKey = $this->google2fa->generateSecretKey();
         return true;
       }

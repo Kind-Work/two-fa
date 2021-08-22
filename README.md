@@ -67,6 +67,10 @@ To force 2FA for specific roles, publish the config file and edit as appropriate
 php artisan vendor:publish --tag="two-fa-config"
 ```
 
+## QRCode Rendering
+
+By default QR codes are rendered as inline PNG files. This requires the Imagick PHP extension. If you would rather not or can not install Imagick you can render the QR codes as SVGs instead. You can customize this in your configuration file or by setting the environment variable `QR_CODE_TYPE` to `SVG`.
+
 ## Database
 
 If you store your users in a database run the following command to generate a database migration.

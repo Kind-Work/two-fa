@@ -17,10 +17,14 @@
       @endif
 
       <div class="mb-2 text-center">
-        <img
-          src="{{ $qrCode }}"
-          class="inline-block max-w-full h-auto"
-        />
+        @if ($qrCodeType == 'SVG')
+          {!! $qrCode !!}
+        @else
+          <img
+            src="{{ $qrCode }}"
+            class="inline-block max-w-full h-auto"
+          />
+        @endif
       </div>
       <div class="mb-4">
         <label class="mb-1" for="secret">{{ __("twofa::setup.label") }}</label>

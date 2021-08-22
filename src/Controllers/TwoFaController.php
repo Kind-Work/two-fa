@@ -71,10 +71,19 @@ class TwoFaController extends Controller
     $email = User::current()->email;
     $name = Config::get('app.name');
 
+    if (Config::get('two-fa.qrCodeType') == 'SVG') {
+      $google2fa->setQrcodeService(
+        new \PragmaRX\Google2FAQRCode\QRCode\Bacon(
+          new \BaconQrCode\Renderer\Image\SvgImageBackEnd()
+        )
+      );
+    }
+
     return view('twofa::setup', [
       'error' => $error,
       'secretKey' => $secretKey,
       'url' => $google2fa->getQRCodeUrl($name, $email, $secretKey),
+      'qrCodeType' => Config::get('two-fa.qrCodeType'),
       'qrCode' => $google2fa->getQRCodeInline(
         Config::get('app.name'),
         $email,

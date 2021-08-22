@@ -63,9 +63,10 @@ class CheckTwoFa
 
   private function isTwoFAPath()
   {
-    return $this->request->path() === 'cp/two-fa' ||
-      $this->request->path() === 'cp/two-fa/setup' ||
-      $this->request->path() === 'cp/two-fa/activate-two-fa';
+    $cp = config('statamic.cp.route');
+    return $this->request->path() === "$cp/two-fa" ||
+      $this->request->path() === "$cp/two-fa/setup" ||
+      $this->request->path() === "$cp/two-fa/activate-two-fa";
   }
 
   private function isSetupForced()

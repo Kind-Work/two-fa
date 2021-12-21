@@ -21,7 +21,7 @@ return [
   | QR Code PNG (Imagick) or SVG
   |--------------------------------------------------------------------------
   |
-  | If we using roles-only or roles-except this is the list of roles to use
+  | If we should use PNG or SVG files for the QR codes
   |
   */
 

@@ -7,10 +7,14 @@
     "watch-poll": "mix watch -- --watch-options-poll=1000",
     "hot": "mix watch --hot",
     "prod": "npm run production",
-    "production": "mix --production"
+    "production": "mix --production",
+    "lint": "./node_modules/.bin/eslint resources/js/*",
+    "lint:fix": "./node_modules/.bin/eslint resources/js/* --fix"
   },
   "devDependencies": {
     "cross-env": "^7.0",
+    "eslint": "^8.5.0",
+    "eslint-plugin-vue": "^8.2.0",
     "laravel-mix": "^6.0",
     "resolve-url-loader": "^4.0",
     "sass": "^1.45",

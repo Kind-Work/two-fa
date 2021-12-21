@@ -132,6 +132,8 @@
 </template>
 
 <script>
+/*global Fieldtype*/
+
 export default {
   mixins: [Fieldtype],
   data() {
@@ -173,7 +175,7 @@ export default {
             this.state = 'idle';
           }
         })
-        .catch((e) => {
+        .catch(() => {
           this.$toast.error(
             this.translations['twofa::activate.errors.unknown'],
           );
@@ -206,7 +208,7 @@ export default {
             this.state = 'active';
           }
         })
-        .catch((e) => {
+        .catch(() => {
           this.$toast.error(
             this.translations['twofa::deactivate.errors.unknown'],
           );

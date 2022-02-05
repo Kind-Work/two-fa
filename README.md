@@ -71,6 +71,14 @@ php artisan vendor:publish --tag="two-fa-config"
 
 By default QR codes are rendered as inline PNG files. This requires the Imagick PHP extension. If you would rather not or can not install Imagick you can render the QR codes as SVGs instead. You can customize this in your configuration file or by setting the environment variable `QR_CODE_TYPE` to `SVG`.
 
+## Max Attempts
+
+By default accounts are locked out after 5 attempts to enter a 2FA code. You can change this in the config or by setting the environment variable `2FA_MAX_ATTEMPTS`.
+
+## Remember Time
+
+A user can choose to remember the browser when they enter their 2FA code, so they do not have to re-enter their 2FA code on each login. By default the time to remember the code is 30 days. You can change this default by setting the number of minutes that the browser should be remembered in the config or the environment variable `2FA_REMEMBER_TIME`.
+
 ## Database
 
 If you store your users in a database run the following command to generate a database migration.

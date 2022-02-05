@@ -37,4 +37,27 @@ return [
     */
 
   'roles' => ['super'],
+
+  /*
+    |--------------------------------------------------------------------------
+    | Lockout Attempts
+    |--------------------------------------------------------------------------
+    |
+    | How many 2FA attempts to allow before locking out account
+    |
+    */
+
+  'maxAttempts' => env('2FA_MAX_ATTEMPTS', 5),
+
+  /*
+    |--------------------------------------------------------------------------
+    | Remember Me Time
+    |--------------------------------------------------------------------------
+    |
+    | How long to remember a browser in minutes
+    | Default 43200 = 30 days
+    |
+    */
+
+  'rememberTime' => env('2FA_REMEMBER_TIME', 43200),
 ];

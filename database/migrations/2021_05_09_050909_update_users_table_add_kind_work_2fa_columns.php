@@ -15,7 +15,7 @@ class UpdateUsersTableAddKindWork2faColumns extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->char('2FA', 1)->nullable();
-            $table->string('two_fa')->nullable();
+            $table->string('two_fa', 255)->nullable();
         });
     }
 

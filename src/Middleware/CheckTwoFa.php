@@ -4,9 +4,9 @@ namespace KindWork\TwoFa\Middleware;
 
 use Config;
 use Closure;
+use Carbon\Carbon;
 use Statamic\Facades\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class CheckTwoFa
 {
@@ -41,14 +41,18 @@ class CheckTwoFa
 
   private function isAuthed()
   {
-    // Check to see if we already authed with 2FA on the session
+    // Check to see if we already authenticated with 2FA on the session
     if ($this->request->session()->get('two_fa_authenticated')) {
       return true;
     }
 
     // Else if there is a valid remember token
     if ($token = $this->request->cookie('two_fa_rember_token')) {
-      if (Cache::get($token) == User::current()->id()) {
+      $user = User::current();
+      $rememberToken = $user->getMeta('2fa_rember_token');
+      $tokenExpiresAt = $user->getMeta('2fa_rember_token_expires_at');
+      $currentTimestamp = Carbon::now()->timestamp;
+      if ($token == $rememberToken && $tokenExpiresAt > $currentTimestamp) {
         // Add auth back to session
         $this->request->session()->put('two_fa_authenticated', true);
         return true;
@@ -61,7 +65,7 @@ class CheckTwoFa
   private function isCodeRequired()
   {
     return $this->isEnabled() &&
-      // Make sure we are not already authed with 2FA on the session
+      // Make sure we are not already authenticated with 2FA on the session
       !$this->isAuthed();
   }
 

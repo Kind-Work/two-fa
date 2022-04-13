@@ -4,12 +4,12 @@ namespace KindWork\TwoFa\Controllers;
 
 use Log;
 use Config;
+use Carbon\Carbon;
 use Statamic\Facades\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use PragmaRX\Google2FA\Support\Constants;
@@ -171,10 +171,12 @@ class TwoFaController extends Controller
       $request->session()->put('two_fa_authenticated', true);
       $request->session()->pull('invalid_2fa_count');
       if ($request->input('remember')) {
-        $rember_token = Str::random(40);
-        Cache::put($rember_token, $this->user->id(), now()->addMinutes(Config::get('two-fa.rememberTime')));
+        $remberToken = Str::random(40);
+        $tokenExpiresAt = Carbon::now()->addMinutes(Config::get('two-fa.rememberTime'))->timestamp;
+        $this->currentUser->setMeta('2fa_rember_token', $remberToken);
+        $this->currentUser->setMeta('2fa_rember_token_expires_at', $tokenExpiresAt);
         return redirect(cp_route('index'))->withCookie(
-          cookie('two_fa_rember_token', $rember_token, Config::get('two-fa.rememberTime'))
+          cookie('two_fa_rember_token', $remberToken, Config::get('two-fa.rememberTime'))
         );
       }
       return redirect(cp_route('index'));
@@ -229,6 +231,12 @@ class TwoFaController extends Controller
       $this->user->set('two_fa', null);
       $this->user->set('2FA', '✕');
       $this->user->save();
+
+      // Remove any remember tokens if they exist
+      if ($token = $request->cookie('two_fa_rember_token')) {
+        $this->currentUser->setMeta('2fa_rember_token', '');
+        $this->currentUser->setMeta('2fa_rember_token_expires_at', '');
+      }
 
       // If we are deactivating our own 2FA destroy the session 2fa data
       if ($this->user->id() == $this->currentUser->id()) {

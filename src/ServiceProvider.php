@@ -20,6 +20,10 @@ class ServiceProvider extends AddonServiceProvider
 
   protected $fieldtypes = [Fieldtypes\TwoFaFieldtype::class];
 
+  protected $commands = [
+    Console\Commands\MigrateFields::class,
+  ];
+
   public function bootAddon()
   {
     $this->bootAddonViews()->bootAddonTranslations()->bootAddonMigrations();

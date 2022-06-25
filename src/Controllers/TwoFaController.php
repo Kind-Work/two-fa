@@ -116,7 +116,7 @@ class TwoFaController extends Controller
         $this->google2fa->verifyKey($key, $secret, $this->window)
     ) {
       $this->user->set('two_fa', Crypt::encryptString($key));
-      $this->user->set('2FA', '✓');
+      $this->user->set('TwoFA', '✓');
       $this->user->save();
       // If we are activating our own 2FA auto auth and remove invalid 2fa count
       if ($this->user->id() == $this->currentUser->id()) {
@@ -173,8 +173,14 @@ class TwoFaController extends Controller
       if ($request->input('remember')) {
         $remberToken = Str::random(40);
         $tokenExpiresAt = Carbon::now()->addMinutes(Config::get('two-fa.rememberTime'))->timestamp;
-        $this->currentUser->setMeta('2fa_rember_token', $remberToken);
-        $this->currentUser->setMeta('2fa_rember_token_expires_at', $tokenExpiresAt);
+        if (Config::get('statamic.users.repository') == 'eloquent') {
+          $this->currentUser->set('two_fa_rember_token', $remberToken);
+          $this->currentUser->set('two_fa_rember_token_expires_at', $tokenExpiresAt);
+          $this->currentUser->save();
+        } else {
+          $this->currentUser->setMeta('two_fa_rember_token', $remberToken);
+          $this->currentUser->setMeta('two_fa_rember_token_expires_at', $tokenExpiresAt);
+        }
         return redirect(cp_route('index'))->withCookie(
           cookie('two_fa_rember_token', $remberToken, Config::get('two-fa.rememberTime'))
         );
@@ -229,13 +235,19 @@ class TwoFaController extends Controller
       ($valid = $this->google2fa->verifyKey($key, $secret, $this->window))
     ) {
       $this->user->set('two_fa', null);
-      $this->user->set('2FA', '✕');
+      $this->user->set('TwoFA', '✕');
       $this->user->save();
 
       // Remove any remember tokens if they exist
       if ($token = $request->cookie('two_fa_rember_token')) {
-        $this->currentUser->setMeta('2fa_rember_token', '');
-        $this->currentUser->setMeta('2fa_rember_token_expires_at', '');
+        if (Config::get('statamic.users.repository') == 'eloquent') {
+          $this->currentUser->set('two_fa_rember_token', null);
+          $this->currentUser->set('two_fa_rember_token_expires_at', null);
+          $this->currentUser->save();
+        } else {
+          $this->currentUser->setMeta('two_fa_rember_token', '');
+          $this->currentUser->setMeta('two_fa_rember_token_expires_at', '');
+        }
       }
 
       // If we are deactivating our own 2FA destroy the session 2fa data

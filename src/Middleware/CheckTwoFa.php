@@ -16,6 +16,7 @@ class CheckTwoFa
   public function handle(Request $request, Closure $next)
   {
     $this->request = $request;
+    $this->user = User::current()->data();
 
     if ($this->isAuthed()) {
       if ($this->isTwoFAPath() && !$request->ajax()) {
@@ -23,8 +24,6 @@ class CheckTwoFa
       }
       return $next($this->request);
     }
-
-    $this->user = User::current()->data();
 
     if (!$this->isTwoFAPath() && $this->isCodeRequired()) {
       // If we get here go to the two FA page to get the code
@@ -47,10 +46,16 @@ class CheckTwoFa
     }
 
     // Else if there is a valid remember token
-    if ($token = $this->request->cookie('two_fa_rember_token')) {
+    if (
+      $token = $this->request->cookie('two_fa_rember_token') &&
+      (
+        Config::get('statamic.users.repository') != 'eloquent' ||
+        ($this->user['two_fa_rember_token'] != null && $this->user['two_fa_rember_token_expires_at'] != null)
+      )
+    ) {
       $user = User::current();
-      $rememberToken = $user->getMeta('2fa_rember_token');
-      $tokenExpiresAt = $user->getMeta('2fa_rember_token_expires_at');
+      $rememberToken = Config::get('statamic.users.repository') == 'eloquent' ? $this->user['two_fa_rember_token'] : $user->getMeta('two_fa_rember_token');
+      $tokenExpiresAt = Config::get('statamic.users.repository') == 'eloquent' ? $this->user['two_fa_rember_token_expires_at'] : $user->getMeta('two_fa_rember_token_expires_at');
       $currentTimestamp = Carbon::now()->timestamp;
       if ($token == $rememberToken && $tokenExpiresAt > $currentTimestamp) {
         // Add auth back to session

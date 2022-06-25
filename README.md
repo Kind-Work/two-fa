@@ -15,7 +15,7 @@ Statamic 2FA is commercial software. You do not need a licence for development b
 
 You can install this addon via composer with the following command or from the Statamic control panel.
 
-```bash
+```console
 composer require kind-work/two-fa
 ```
 
@@ -63,7 +63,7 @@ To force 2FA for all users set an environment variable `FORCE_2FA` to `true`.
 
 To force 2FA for specific roles, publish the config file and edit as appropriate.
 
-```bash
+```console
 php artisan vendor:publish --tag="two-fa-config"
 ```
 
@@ -83,8 +83,23 @@ A user can choose to remember the browser when they enter their 2FA code, so the
 
 If you store your users in a database run the following command to generate a database migration.
 
-```bash
+```console
 php artisan vendor:publish --tag="twofa-migrations"
+```
+
+## Migration from V1 to V2
+
+### File Based Users (default)
+If you store your users in files you can optionally run the following migration to move over remember tokens and the 2FA-enabled visual indicator field to their new names.
+```console
+php please 2fa:migrate:fields
+```
+
+### Database Users
+To migrate your MySQL database to the new column names, run the following commands to copy over and run the migration.
+```console
+php artisan vendor:publish --tag="twofa-migrations"
+php artisan migrate
 ```
 
 ## Changelog

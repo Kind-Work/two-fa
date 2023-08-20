@@ -1,3 +1,5 @@
+This addon is no longer supported. For a supported addon please see: https://statamic.com/addons/mity-digital/two-factor
+
 ![Statamic 3.0+](https://img.shields.io/badge/Statamic-3.0+-FF269E?style=for-the-badge&link=https://statamic.com)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/4fe2d8a500d94b05b4198a49f1bc9d03)](https://www.codacy.com/gh/kind-work/two-fa/dashboard?utm_source=github.com&utm_medium=referral&utm_content=kind-work/two-fa&utm_campaign=Badge_Grade)
 
